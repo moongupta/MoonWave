@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import MusicParticles from "./MusicParticles";
 
 interface AnimatedBackgroundProps {
   primary: string;
@@ -14,97 +15,112 @@ export default function AnimatedBackground({
   accent,
 }: AnimatedBackgroundProps) {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Main Orb */}
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Base Background */}
+      <div className="absolute inset-0 bg-[#030303]" />
+
+      {/* Aurora Primary */}
       <motion.div
-        className="absolute -top-40 -left-40 h-[650px] w-[650px] rounded-full blur-[180px]"
-        style={{ backgroundColor: primary }}
         animate={{
-          x: [0, 120, 0],
-          y: [0, -80, 0],
+          x: [-80, 80, -80],
+          y: [-40, 50, -40],
           scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 24,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      {/* Secondary Orb */}
-      <motion.div
-        className="absolute bottom-[-150px] right-[-120px] h-[550px] w-[550px] rounded-full blur-[180px]"
-        style={{ backgroundColor: secondary }}
-        animate={{
-          x: [0, -120, 0],
-          y: [0, 90, 0],
-          scale: [1, 1.25, 1],
-        }}
-        transition={{
-          duration: 28,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      {/* Center Glow */}
-      <motion.div
-        className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[160px]"
-        style={{ backgroundColor: accent }}
-        animate={{
-          rotate: [0, 360],
-          scale: [1, 1.15, 1],
-        }}
-        transition={{
-          duration: 35,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-
-      {/* Aurora Layer */}
-      <motion.div
-        className="absolute inset-0 opacity-20"
-        animate={{
-          background: [
-            `radial-gradient(circle at 20% 20%, ${primary}55, transparent 45%)`,
-            `radial-gradient(circle at 80% 30%, ${secondary}55, transparent 45%)`,
-            `radial-gradient(circle at 50% 80%, ${accent}55, transparent 45%)`,
-            `radial-gradient(circle at 20% 20%, ${primary}55, transparent 45%)`,
-          ],
+          opacity: [0.28, 0.42, 0.28],
         }}
         transition={{
           duration: 18,
           repeat: Infinity,
-          ease: "linear",
+          ease: "easeInOut",
+        }}
+        className="absolute -left-72 -top-72 h-[900px] w-[900px] rounded-full blur-[180px]"
+        style={{
+          background: primary,
         }}
       />
 
-      {/* Floating Particles */}
-      {Array.from({ length: 20 }).map((_, index) => (
-        <motion.div
-          key={index}
-          className="absolute h-2 w-2 rounded-full bg-white/20"
+      {/* Aurora Secondary */}
+      <motion.div
+        animate={{
+          x: [60, -60, 60],
+          y: [30, -50, 30],
+          scale: [1.1, 1, 1.1],
+          opacity: [0.25, 0.4, 0.25],
+        }}
+        transition={{
+          duration: 22,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute -bottom-80 -right-72 h-[1000px] w-[1000px] rounded-full blur-[200px]"
+        style={{
+          background: secondary,
+        }}
+      />
+
+      {/* Center Accent Glow */}
+      <motion.div
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.12, 0.22, 0.12],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute left-1/2 top-1/2 h-[550px] w-[550px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[160px]"
+        style={{
+          background: accent,
+        }}
+      />
+
+      {/* Rotating Light Sweep */}
+      <motion.div
+        animate={{
+          rotate: [0, 360],
+        }}
+        transition={{
+          duration: 80,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="absolute left-1/2 top-1/2 h-[1800px] w-[1800px] -translate-x-1/2 -translate-y-1/2"
+      >
+        <div
+          className="absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 blur-xl"
           style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            y: [0, -40, 0],
-            opacity: [0.2, 0.8, 0.2],
-            scale: [1, 1.8, 1],
-          }}
-          transition={{
-            duration: 4 + index * 0.3,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: index * 0.2,
+            background: accent,
+            opacity: 0.08,
           }}
         />
-      ))}
+      </motion.div>
 
-      {/* Noise Overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent,rgba(0,0,0,0.35))]" />
+      {/* Floating Particles */}
+      <div className="absolute inset-0 z-[1]">
+        <MusicParticles color={accent} />
+      </div>
+
+      {/* Cinematic Overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,.08), transparent 25%, transparent 75%, rgba(0,0,0,.35))",
+        }}
+      />
+
+      {/* Noise Texture */}
+      <div
+        className="absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+          backgroundSize: "22px 22px",
+        }}
+      />
+
+      {/* Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_45%,rgba(0,0,0,.55)_100%)]" />
     </div>
   );
 }

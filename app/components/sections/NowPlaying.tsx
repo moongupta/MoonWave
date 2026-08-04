@@ -1,9 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import type { Song } from "../../types/song";
+import { Play } from "lucide-react";
+import { songs } from "@/app/data/songs";
+import type { Song } from "@/app/types/song";
 
-interface NowPlayingProps {
+interface Props {
   song: Song;
   isPlaying: boolean;
 }
@@ -11,54 +14,98 @@ interface NowPlayingProps {
 export default function NowPlaying({
   song,
   isPlaying,
-}: NowPlayingProps) {
+}: Props) {
   return (
-    <section className="mt-16 overflow-hidden rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl">
-      <div className="flex items-center gap-8">
-        <motion.div
-          animate={{
-            rotate: isPlaying ? 360 : 0,
-          }}
-          transition={{
-            duration: 20,
-            ease: "linear",
-            repeat: isPlaying ? Infinity : 0,
-          }}
-          className="relative"
-        >
-          <div
-            className="absolute inset-0 scale-110 rounded-[32px] blur-[80px]"
-            style={{
-              backgroundColor: song.theme.primary,
-              opacity: 0.35,
-            }}
-          />
+    <section>
 
-          <img
-            src={song.image}
-            alt={song.title}
-            className="relative h-56 w-56 rounded-[32px] border border-white/10 object-cover"
-          />
-        </motion.div>
+      <div className="mb-8 flex items-center justify-between">
 
-        <div className="flex-1">
-          <p className="text-sm uppercase tracking-[0.35em] text-red-400">
-            NOW PLAYING
-          </p>
+        <h2 className="text-3xl font-black text-white">
+          New Releases
+        </h2>
 
-          <h2 className="mt-3 text-5xl font-black text-white">
-            {song.title}
-          </h2>
+        <button className="text-zinc-400 hover:text-white transition">
+          View All →
+        </button>
 
-          <p className="mt-3 text-xl text-zinc-400">
-            {song.artist}
-          </p>
-
-          <p className="mt-6 text-zinc-500">
-            {song.plays}
-          </p>
-        </div>
       </div>
+
+      <div className="flex gap-8 overflow-x-auto pb-4 scrollbar-hide">
+
+        {songs.map((release) => (
+
+          <motion.div
+            key={release.id}
+            whileHover={{
+              y: -10,
+              scale: 1.03,
+            }}
+            transition={{
+              duration: 0.25,
+            }}
+            className="group relative min-w-[320px] overflow-hidden rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl"
+          >
+
+            <div className="relative h-[420px]">
+
+              <Image
+                src={release.image}
+                alt={release.title}
+                fill
+                className="object-cover transition duration-700 group-hover:scale-110"
+              />
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+
+              <motion.div
+                whileHover={{
+                  scale: 1.15,
+                }}
+                className="absolute right-6 top-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-500 shadow-[0_0_60px_rgba(239,68,68,.6)]"
+              >
+                <Play
+                  fill="white"
+                  size={28}
+                  className="text-white"
+                />
+              </motion.div>
+
+              <div className="absolute bottom-8 left-8 right-8">
+
+                <p className="text-sm uppercase tracking-[0.35em] text-red-300">
+                  Featured Release
+                </p>
+
+                <h3 className="mt-3 text-4xl font-black text-white">
+                  {release.title}
+                </h3>
+
+                <p className="mt-3 text-xl text-zinc-300">
+                  {release.artist}
+                </p>
+
+                <div className="mt-6 flex items-center gap-3">
+
+                  <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur">
+                    {release.album}
+                  </span>
+
+                  <span className="rounded-full bg-red-500/20 px-4 py-2 text-sm text-red-300">
+                    {release.duration}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </motion.div>
+
+        ))}
+
+      </div>
+
     </section>
   );
 }

@@ -1,6 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { songs } from "../data/songs";
 import type { Song } from "../types/song";
 
@@ -28,6 +33,9 @@ export function useAudioPlayer() {
 
   const [currentSong, setCurrentSong] =
     useState<Song>(songs[0]);
+    const [queue, setQueue] = useState<Song[]>(songs);
+
+const [history, setHistory] = useState<Song[]>([]);
 
   const [isPlaying, setIsPlaying] =
     useState(false);
@@ -45,40 +53,37 @@ export function useAudioPlayer() {
   // Create Audio Element
   // -----------------------------
   useEffect(() => {
-    const audio = new Audio();
+  const audio = new Audio();
 
-    audio.preload = "auto";
+  audio.preload = "auto";
+  audio.volume = 1;
 
-    audio.volume = volume;
+  audioRef.current = audio;
 
-    audioRef.current = audio;
-
-    return () => {
-      audio.pause();
-      audio.src = "";
-    };
-  }, []);
+  return () => {
+    audio.pause();
+    audio.src = "";
+  };
+}, []);
 
   // -----------------------------
   // Load Song
   // -----------------------------
   useEffect(() => {
-    if (!audioRef.current) return;
+  if (!audioRef.current) return;
 
-    const audio = audioRef.current;
+  const audio = audioRef.current;
+  const song = queue[currentIndex];
 
-    const song = songs[currentIndex];
+  setCurrentSong(song);
 
-    setCurrentSong(song);
+  audio.src = song.audio;
+  audio.load();
 
-    audio.src = song.audio;
-
-    audio.load();
-
-    if (isPlaying) {
-      audio.play().catch(console.error);
-    }
-  }, [currentIndex]);
+  if (isPlaying) {
+    void audio.play().catch(console.error);
+  }
+}, [currentIndex, isPlaying]);
 
   // -----------------------------
   // Volume
@@ -148,11 +153,10 @@ export function useAudioPlayer() {
 
     analyser.connect(context.destination);
 
-    const buffer = new ArrayBuffer(analyser.frequencyBinCount);
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-const dataArray = new Uint8Array(buffer);
+    dataArrayRef.current = dataArray;
 
-dataArrayRef.current = dataArray;
 
 
     audioContextRef.current = context;
@@ -206,19 +210,38 @@ dataArrayRef.current = dataArray;
   }, []);
 
   const nextSong = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % songs.length);
-  }, []);
+  setCurrentIndex((prev) => {
+    const next = (prev + 1) % queue.length;
+
+    setHistory((old) => [...old, queue[prev]]);
+
+    return next;
+  });
+}, [queue]);
 
   const previousSong = useCallback(() => {
-    setCurrentIndex((prev) =>
-      prev === 0 ? songs.length - 1 : prev - 1
-    );
-  }, []);
+  setCurrentIndex((prev) => {
+    if (history.length > 0) {
+      const lastSong = history[history.length - 1];
+
+      const index = queue.findIndex(
+        (song) => song.id === lastSong.id
+      );
+
+      if (index !== -1) {
+        setHistory((old) => old.slice(0, -1));
+        return index;
+      }
+    }
+
+    return prev === 0 ? queue.length - 1 : prev - 1;
+  });
+}, [history, queue]);
 
   const playSong = useCallback(
     (song: Song) => {
-      const index = songs.findIndex(
-        (s) => s.id === song.id
+      const index = queue.findIndex(
+       (s) => s.id === song.id
       );
 
       if (index === -1) return;
@@ -229,6 +252,61 @@ dataArrayRef.current = dataArray;
     },
     []
   );
+  const playPlaylist = useCallback(
+  (playlistSongs: Song[]) => {
+    if (playlistSongs.length === 0) return;
+
+    setQueue(playlistSongs);
+
+    setHistory([]);
+
+    setCurrentIndex(0);
+
+    setCurrentSong(playlistSongs[0]);
+
+    setIsPlaying(true);
+  },
+  []
+);
+  const addToQueue = useCallback((song: Song) => {
+  setQueue((old) => [...old, song]);
+}, []);
+
+const playNext = useCallback(
+  (song: Song) => {
+    setQueue((old) => {
+      const copy = [...old];
+
+      copy.splice(currentIndex + 1, 0, song);
+
+      return copy;
+    });
+  },
+  [currentIndex]
+);
+
+const removeFromQueue = useCallback((id: number) => {
+  setQueue((old) => old.filter((song) => song.id !== id));
+}, []);
+
+const clearQueue = useCallback(() => {
+  setQueue([]);
+}, []);
+
+const moveQueueItem = useCallback(
+  (from: number, to: number) => {
+    setQueue((old) => {
+      const copy = [...old];
+
+      const [item] = copy.splice(from, 1);
+
+      copy.splice(to, 0, item);
+
+      return copy;
+    });
+  },
+  []
+);
 
   // -----------------------------
   // Auto Next
@@ -310,5 +388,21 @@ dataArrayRef.current = dataArray;
     sourceRef,
 
     dataArrayRef,
+    queue,
+
+history,
+
+addToQueue,
+
+playNext,
+
+removeFromQueue,
+
+clearQueue,
+
+moveQueueItem,
+
+playPlaylist,
+
   };
 }

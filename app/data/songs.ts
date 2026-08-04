@@ -1,4 +1,4 @@
-import { Song } from "../types/song";
+import type { Song } from "../types/song";
 
 export const songs: Song[] = [
   {
@@ -8,62 +8,68 @@ export const songs: Song[] = [
     album: "BECALIVE",
 
     image: "/covers/becalive.jpg",
-    cover: "/covers/becalive.jpg",
+    audio: "/songs/BECALIVE.mp3",
 
-    audio: "/songs/becalive.mp3",
-
-    duration: 0,
-
-    plays: "1.2B plays",
+    duration: "4:36",
 
     theme: {
-      primary: "#3B82F6",
-      secondary: "#06B6D4",
-      accent: "#8B5CF6",
+      primary: "#7c3aed",
+      secondary: "#2563eb",
+      accent: "#ffffff",
     },
   },
 
   {
     id: 2,
-    title: "Coming Soon",
+    title: "Future Vision",
     artist: "Moon Gupta",
-    album: "BECALIVE",
+    album: "Future Vision",
 
-    image: "/covers/becalive.jpg",
-    cover: "/covers/becalive.jpg",
+    image: "/covers/futurevision.jpg",
+    audio: "/songs/FutureVision.mp3",
 
-    audio: "/songs/becalive.mp3",
-
-    duration: 0,
-
-    plays: "850M plays",
+    duration: "3:58",
 
     theme: {
-      primary: "#EC4899",
-      secondary: "#F97316",
-      accent: "#FACC15",
+      primary: "#2563eb",
+      secondary: "#06b6d4",
+      accent: "#ffffff",
     },
   },
 
   {
     id: 3,
-    title: "Future Vision",
+    title: "Human Nature 2030",
     artist: "Moon Gupta",
-    album: "BECALIVE",
+    album: "Future Vision",
 
-    image: "/covers/becalive.jpg",
-    cover: "/covers/becalive.jpg",
+    image: "/covers/humannature.jpg",
+    audio: "/songs/HumanNature2030.mp3",
 
-    audio: "/songs/becalive.mp3",
-
-    duration: 0,
-
-    plays: "420M plays",
+    duration: "5:12",
 
     theme: {
-      primary: "#10B981",
-      secondary: "#06B6D4",
-      accent: "#22D3EE",
+      primary: "#22c55e",
+      secondary: "#15803d",
+      accent: "#ffffff",
+    },
+  },
+
+  {
+    id: 4,
+    title: "Infinite",
+    artist: "Moon Gupta",
+    album: "Universe",
+
+    image: "/covers/infinite.jpg",
+    audio: "/songs/Infinite.mp3",
+
+    duration: "4:09",
+
+    theme: {
+      primary: "#f97316",
+      secondary: "#ea580c",
+      accent: "#ffffff",
     },
   },
 ];
