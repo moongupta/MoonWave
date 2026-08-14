@@ -1,166 +1,187 @@
 "use client";
-import FavoriteButton from "./FavoriteButton";
+
 import Image from "next/image";
+
 import {
+  Maximize2,
   Pause,
   Play,
+  Repeat2,
   SkipBack,
   SkipForward,
   Volume2,
-  Maximize2,
 } from "lucide-react";
-import { motion } from "framer-motion";
 
-import type { Song } from "@/app/types/song";
+import { usePlayer } from "@/app/context/AudioProvider";
+import { formatTime } from "@/app/utils/formatTime";
 
 import ProgressBar from "./ProgressBar";
 import VolumeSlider from "./VolumeSlider";
-import AudioVisualizer from "./AudioVisualizer";
-import PlayerCenter from "./expanded/PlayerCenter";
-import PlayerRight from "./PlayerRight";
-import { formatTime } from "@/app/utils/formatTime";
 
 interface BottomPlayerProps {
-  song: Song;
-  isPlaying: boolean;
-  togglePlay: () => void;
-  progress: number;
-  nextSong: () => void;
-  previousSong: () => void;
-  onSeek: (time: number) => void;
-  volume: number;
-  onVolumeChange: (value: number) => void;
-  currentTime: number;
-  duration: number;
-  analyserRef: React.RefObject<AnalyserNode | null>;
-  dataArrayRef: React.RefObject<Uint8Array | null>;
   isExpanded: boolean;
   onToggleExpanded: () => void;
 }
 
 export default function BottomPlayer({
-  song,
-  isPlaying,
-  togglePlay,
-  progress,
-  nextSong,
-  previousSong,
-  onSeek,
-  volume,
-  onVolumeChange,
-  currentTime,
-  duration,
-  analyserRef,
-  dataArrayRef,
+  isExpanded,
   onToggleExpanded,
 }: BottomPlayerProps) {
+  const {
+    currentSong,
+
+    isPlaying,
+
+    togglePlay,
+
+    nextSong,
+    previousSong,
+
+    progress,
+    seek,
+
+    volume,
+    setVolume,
+
+    currentTime,
+    duration,
+  } = usePlayer();
+
   return (
-    <footer
-      className="fixed bottom-5 left-5 right-5 z-50 overflow-hidden rounded-[34px] border border-white/10 bg-black/40 backdrop-blur-3xl"
-      style={{
-        boxShadow: `
-          0 10px 60px rgba(0,0,0,.45),
-          0 0 80px ${song.theme?.primary ?? "#7c3aed"}22,
-          inset 0 1px rgba(255,255,255,.08)
-        `,
-      }}
-    >
-      {/* Ambient Glow */}
-      <div
-        className="absolute inset-0 opacity-40"
-        style={{
-          background: `radial-gradient(circle at center, ${song.theme?.primary ?? "#7c3aed"}55, transparent 72%)`,
-        }}
-      />
+    <footer className="bottom-player">
+      <div className="player-main">
 
-      <div className="relative z-10 px-8 pb-7 pt-6">
-        <ProgressBar
-          progress={progress}
-          onSeek={onSeek}
-        />
+        {/* Left */}
 
-        <div className="mb-6 mt-2 flex justify-between text-xs font-medium text-zinc-400">
-          <span>{formatTime(currentTime)}</span>
-          <span>{formatTime(duration)}</span>
-        </div>
+        <button
+          onClick={onToggleExpanded}
+          className="player-track"
+        >
+          <Image
+            src={currentSong.image}
+            alt={currentSong.title}
+            width={72}
+            height={72}
+          />
 
-        <div className="grid grid-cols-[320px_1fr_280px] items-center gap-6">
-          {/* LEFT */}
-          <motion.div
-            whileHover={{
-              scale: 1.02,
-            }}
-            whileTap={{
-              scale: 0.99,
-            }}
-            onClick={onToggleExpanded}
-            className="flex cursor-pointer items-center gap-4"
-          >
-            <div className="relative flex h-[72px] w-[72px] items-center justify-center">
-              <AudioVisualizer
-                analyserRef={analyserRef}
-                dataArrayRef={dataArrayRef}
-                isPlaying={isPlaying}
-                color={song.theme?.primary ?? "#7c3aed"}
+          <span>
+            <b>{currentSong.title}</b>
+
+            <small>
+              {currentSong.artist}
+            </small>
+          </span>
+        </button>
+
+        {/* Center */}
+
+        <div className="player-controls">
+
+          <div>
+
+            <button aria-label="Shuffle">
+              <span className="text-lg">
+                ⌘
+              </span>
+            </button>
+
+            <button
+              aria-label="Previous"
+              onClick={previousSong}
+            >
+              <SkipBack
+                size={23}
+                fill="currentColor"
               />
+            </button>
 
-              <motion.div
-                layoutId={`album-${song.title}`}
-                animate={{
-                  rotate: isPlaying ? 360 : 0,
-                }}
-                transition={{
-                  rotate: {
-                    duration: 10,
-                    repeat: isPlaying ? Infinity : 0,
-                    ease: "linear",
-                  },
-                }}
-                className="absolute"
-              >
-                <Image
-                  src={song.image}
-                  alt={song.title}
-                  width={64}
-                  height={64}
-                  priority
-                  draggable={false}
-                  className="rounded-full border border-white/20 object-cover shadow-2xl select-none"
+            <button
+              aria-label={
+                isPlaying
+                  ? "Pause"
+                  : "Play"
+              }
+              onClick={togglePlay}
+              className="play-control"
+            >
+              {isPlaying ? (
+                <Pause
+                  size={28}
+                  fill="currentColor"
                 />
-              </motion.div>
-            </div>
+              ) : (
+                <Play
+                  size={28}
+                  fill="currentColor"
+                  className="ml-1"
+                />
+              )}
+            </button>
 
-            <div className="min-w-0">
-              <h2 className="truncate text-lg font-bold text-white">
-                {song.title}
-              </h2>
-              <FavoriteButton songId={song.id} />
+            <button
+              aria-label="Next"
+              onClick={nextSong}
+            >
+              <SkipForward
+                size={23}
+                fill="currentColor"
+              />
+            </button>
 
-              <p className="truncate text-sm text-zinc-400">
-                {song.artist}
-              </p>
+            <button aria-label="Repeat">
+              <Repeat2 size={21} />
+            </button>
 
-              <p className="mt-1 truncate text-xs text-zinc-500">
-                {song.album}
-              </p>
-            </div>
-          </motion.div>
+          </div>
 
-          {/* CENTER */}
-          <PlayerCenter
-            isPlaying={isPlaying}
-            togglePlay={togglePlay}
-            previousSong={previousSong}
-            nextSong={nextSong}
-          />
+          <div className="player-progress">
 
-          {/* RIGHT */}
-          <PlayerRight
-            volume={volume}
-            onVolumeChange={onVolumeChange}
-            onToggleExpanded={onToggleExpanded}
-          />
+            <time>
+              {formatTime(currentTime)}
+            </time>
+
+            <ProgressBar
+              progress={progress}
+              duration={duration}
+              onSeek={seek}
+            />
+
+            <time>
+              {formatTime(duration)}
+            </time>
+
+          </div>
+
         </div>
+
+        {/* Right */}
+
+        <div className="player-tools">
+
+          <Volume2 size={20} />
+
+          <VolumeSlider
+            volume={volume}
+            onChange={setVolume}
+          />
+
+          <button aria-label="Lyrics">
+            ☷
+          </button>
+
+          <button aria-label="Comments">
+            ▣
+          </button>
+
+          <button
+            aria-label="Expand"
+            onClick={onToggleExpanded}
+          >
+            <Maximize2 size={18} />
+          </button>
+
+        </div>
+
       </div>
     </footer>
   );

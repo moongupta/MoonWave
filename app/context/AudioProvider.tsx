@@ -7,7 +7,7 @@ import React, {
 
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 
-type PlayerContextType =
+export type PlayerContextType =
   ReturnType<typeof useAudioPlayer>;
 
 const AudioContext =

@@ -1,42 +1,95 @@
 "use client";
 
-import { useLibrary } from "../context/LibraryProvider";
-import { songs } from "../data/songs";
-import MusicCard from "../components/cards/MusicCard";
-import { usePlayer } from "../context/AudioProvider";
+import Sidebar from "@/app/components/layout/Sidebar";
+import Header from "@/app/components/layout/Header";
+import BottomPlayer from "@/app/components/player/BottomPlayer";
+import AnimatedBackground from "@/app/components/effects/AnimatedBackground";
+
+import LibraryHero from "@/app/components/library/LibraryHero";
+import LibraryTabs from "@/app/components/library/LibraryTabs";
+import RecentlyAdded from "@/app/components/library/RecentlyAdded";
+import DownloadsSection from "@/app/components/library/DownloadsSection";
+import RecentlyPlayed from "@/app/components/library/RecentlyPlayed";
+
+import { usePlayer } from "@/app/context/AudioProvider";
 
 export default function LibraryPage() {
-    const { library } = useLibrary();
-    const { playSong } = usePlayer();
+  const player = usePlayer();
 
-    const favoriteSongs = songs.filter((song) =>
-        library.includes(song.id)
-    );
+  const {
+    currentSong,
+    isPlaying,
+    togglePlay,
+    playSong,
+    nextSong,
+    previousSong,
+    seek,
+    currentTime,
+    duration,
+    volume,
+    setVolume,
+    analyserRef,
+    dataArrayRef,
+  } = player;
 
-    return (
-        <main className="p-10">
-            <h1 className="mb-8 text-4xl font-bold">
-                Your Library
-            </h1>
-            <p className="mt-2 text-zinc-400">
-                {favoriteSongs.length} Favorite Songs
-            </p>
+  const progress =
+    duration === 0
+      ? 0
+      : (currentTime / duration) * 100;
 
-            {favoriteSongs.length === 0 ? (
-                <div className="flex h-[50vh] items-center justify-center text-zinc-500">
-                    No favorite songs yet ❤️
-                </div>
-            ) : (
-                <div className="grid grid-cols-4 gap-6">
-                    {favoriteSongs.map((song) => (
-                        <MusicCard
-                            key={song.id}
-                            song={song}
-                            onClick={() => playSong(song)}
-                        />
-                    ))}
-                </div>
-            )}
+  return (
+    <main className="min-h-screen overflow-hidden bg-[#06070b] text-white">
+      <div className="flex min-h-screen">
+        <Sidebar activePage="Library" />
+
+        <main className="relative flex-1 overflow-y-auto">
+          <AnimatedBackground
+            primary="#7c3aed"
+            secondary="#ec4899"
+            accent="#ffffff"
+          />
+
+          <div className="relative z-10">
+            <Header />
+
+            <div className="space-y-12 px-8 pb-44 pt-8">
+              <LibraryHero />
+
+              <LibraryTabs />
+
+              <RecentlyAdded
+                onSelectSong={playSong}
+              />
+
+              <DownloadsSection
+                onSelectSong={playSong}
+              />
+
+              <RecentlyPlayed
+                onSelectSong={playSong}
+              />
+            </div>
+          </div>
         </main>
-    );
+      </div>
+
+      <BottomPlayer
+        song={currentSong}
+        isPlaying={isPlaying}
+        togglePlay={togglePlay}
+        progress={progress}
+        nextSong={nextSong}
+        previousSong={previousSong}
+        onSeek={seek}
+        volume={volume}
+        onVolumeChange={setVolume}
+        currentTime={currentTime}
+        duration={duration}
+        analyserRef={analyserRef}
+        dataArrayRef={dataArrayRef}
+        isExpanded={false}
+        onToggleExpanded={() => {}}
+      />
+    </main>
+  );
 }

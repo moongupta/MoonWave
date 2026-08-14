@@ -2,8 +2,7 @@
 
 import {
   Bell,
-  Settings,
-  Mic,
+  Cast,
 } from "lucide-react";
 
 import SearchBar from "../ui/SearchBar";
@@ -12,16 +11,16 @@ import Avatar from "../ui/Avatar";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 px-10 pt-8">
+    <header className="sticky top-0 z-50 px-5 pt-5 sm:px-8 lg:px-10">
 
-      <div className="flex items-center justify-between rounded-[32px] border border-white/10 bg-white/5 px-8 py-5 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,.35)]">
+      <div className="header-bar flex items-center justify-between gap-4">
 
         {/* Logo */}
-        <div className="flex items-center gap-4">
+        <div className="hidden items-center gap-3 xl:flex">
 
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 via-pink-500 to-purple-600 shadow-[0_0_40px_rgba(239,68,68,.45)]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 via-pink-500 to-purple-600 shadow-[0_0_30px_rgba(239,68,68,.35)]">
 
-            <span className="text-2xl font-black text-white">
+            <span className="text-lg font-black text-white">
               M
             </span>
 
@@ -29,7 +28,7 @@ export default function Header() {
 
           <div>
 
-            <h1 className="text-2xl font-black text-white">
+            <h1 className="text-lg font-black text-white">
               Music2030
             </h1>
 
@@ -42,25 +41,21 @@ export default function Header() {
         </div>
 
         {/* Search */}
-        <div className="mx-12 flex-1 max-w-3xl">
+        <div className="mx-auto flex-1 max-w-[550px]">
 
           <SearchBar />
 
         </div>
 
         {/* Right */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
 
           <IconButton
-            icon={<Mic size={20} />}
+            icon={<Cast size={18} />}
           />
 
           <IconButton
             icon={<Bell size={20} />}
-          />
-
-          <IconButton
-            icon={<Settings size={20} />}
           />
 
           <Avatar

@@ -100,11 +100,11 @@ export default function Home() {
   }, [togglePlay, nextSong, previousSong]);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-black text-white">
+    <main className="app-shell min-h-screen overflow-hidden bg-black text-white">
       <div className="flex min-h-screen">
         <Sidebar />
 
-        <main className="relative flex-1 overflow-auto">
+        <main className="content-scroll relative flex-1 overflow-auto">
           <AnimatedBackground
             primary={currentSong.theme?.primary ?? "#7c3aed"}
             secondary={currentSong.theme?.secondary ?? "#2563eb"}
@@ -137,7 +137,7 @@ export default function Home() {
             >
               <Header />
 
-              <div className="space-y-12 px-12 py-10">
+              <div className="home-content space-y-7 px-5 pb-44 pt-5 sm:px-8 lg:px-10 xl:px-11">
 
                 <Hero song={currentSong} />
 

@@ -1,198 +1,94 @@
 "use client";
 
-import Image from "next/image";
-import { usePlayer } from "../context/AudioProvider";
-import { songs } from "../data/songs";
-import MusicCard from "../components/cards/MusicCard";
+import Sidebar from "@/app/components/layout/Sidebar";
+import Header from "@/app/components/layout/Header";
+import BottomPlayer from "@/app/components/player/BottomPlayer";
+
+import ExploreHero from "../components/explore/ExploreHero";
+import TrendingSection from "../components/explore/TrendingSection";
+import NewReleaseSection from "../components/explore/NewReleaseSection";
+import ArtistRow from "../components/explore/ArtistRow";
+import GenreGrid from "../components/explore/GenreGrid";
+
+import AnimatedBackground from "@/app/components/effects/AnimatedBackground";
+
+import { usePlayer } from "@/app/context/AudioProvider";
 
 export default function ExplorePage() {
-  const { playSong } = usePlayer();
+  const player = usePlayer();
 
-  const genres = [
-    "Pop",
-    "Hip-Hop",
-    "Electronic",
-    "Lo-Fi",
-    "Rock",
-    "Classical",
-  ];
+  const {
+    currentSong,
+    isPlaying,
+    togglePlay,
+    playSong,
+    nextSong,
+    previousSong,
+    seek,
+    currentTime,
+    duration,
+    volume,
+    setVolume,
+    analyserRef,
+    dataArrayRef,
+  } = player;
 
-  const artists = [
-    {
-      name: "Moon Gupta",
-      image: "/covers/becalive.jpg",
-    },
-    {
-      name: "Future Vision",
-      image: "/covers/futurevision.jpg",
-    },
-    {
-      name: "Human Nature",
-      image: "/covers/humannature.jpg",
-    },
-    {
-      name: "Infinite",
-      image: "/covers/infinite.jpg",
-    },
-  ];
+  const progress =
+    duration === 0
+      ? 0
+      : (currentTime / duration) * 100;
 
   return (
-    <main className="relative min-h-screen px-10 pb-10 pt-16">
-      {/* Background */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-red-900/20 via-black to-orange-900/20 blur-3xl" />
+    <main className="min-h-screen overflow-hidden bg-[#06070b] text-white">
+      <div className="flex min-h-screen">
+        <Sidebar />
 
-      {/* Title */}
-      <h1 className="mb-10 text-5xl font-black text-white">
-        Explore
-      </h1>
+        <main className="relative flex-1 overflow-y-auto">
+          <AnimatedBackground
+            primary="#6d28d9"
+            secondary="#ec4899"
+            accent="#ffffff"
+          />
 
-      {/* Hero */}
-      <section className="rounded-4xl bg-gradient-to-r from-red-600 via-red-500 to-orange-500 p-12">
-        <h2 className="max-w-4xl text-5xl font-black text-white lg:text-6xl">
-          Discover Your Next Favorite Song
-        </h2>
+          <div className="relative z-10">
+            <Header />
 
-        <p className="mt-4 text-xl text-white/80">
-          Trending • New Releases • AI Recommendations
-        </p>
-      </section>
+            <div className="space-y-12 px-8 pb-44 pt-8">
+              <ExploreHero />
 
-      {/* Trending */}
-      <section className="mt-16">
-        <h2 className="mb-8 text-3xl font-bold text-white">
-          Trending
-        </h2>
-
-        <div className="grid grid-cols-4 gap-6">
-          {songs.map((song) => (
-            <MusicCard
-              key={song.id}
-              song={song}
-              onClick={() => playSong(song)}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Genres */}
-      <section className="mt-20">
-        <h2 className="mb-8 text-3xl font-bold text-white">
-          Browse Genres
-        </h2>
-
-        <div className="flex flex-wrap gap-4">
-          {genres.map((genre) => (
-            <button
-              key={genre}
-              className="rounded-full border border-white/10 bg-white/5 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:border-red-500 hover:bg-red-500/20"
-            >
-              {genre}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Albums */}
-      <section className="mt-20">
-        <h2 className="mb-8 text-3xl font-bold text-white">
-          Featured Albums
-        </h2>
-
-        <div className="grid grid-cols-2 gap-8">
-          {songs.slice(0, 2).map((song) => (
-            <div
-              key={song.id}
-              className="group relative h-72 overflow-hidden rounded-4xl border border-white/10"
-            >
-              <Image
-                src={song.image}
-                alt={song.title}
-                fill
-                className="object-cover transition duration-700 group-hover:scale-110"
+              <TrendingSection
+                onSelectSong={playSong}
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+              <NewReleaseSection
+                onSelectSong={playSong}
+              />
 
-              <div className="absolute bottom-0 left-0 p-8">
-                <p className="text-sm uppercase tracking-widest text-zinc-300">
-                  Featured Album
-                </p>
+              <ArtistRow />
 
-                <h3 className="mt-2 text-4xl font-black text-white">
-                  {song.album}
-                </h3>
-
-                <p className="mt-2 text-zinc-300">
-                  {song.artist}
-                </p>
-              </div>
+              <GenreGrid />
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </main>
+      </div>
 
-      {/* Made For You */}
-      <section className="mt-20">
-        <h2 className="mb-8 text-3xl font-bold text-white">
-          Made For You
-        </h2>
-
-        <div className="grid grid-cols-4 gap-6">
-          {songs.map((song) => (
-            <MusicCard
-              key={song.id}
-              song={song}
-              onClick={() => playSong(song)}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Trending Artists */}
-      <section className="mt-20">
-        <h2 className="mb-8 text-3xl font-bold text-white">
-          Trending Artists
-        </h2>
-
-        <div className="flex gap-8 overflow-x-auto pb-4">
-          {artists.map((artist) => (
-            <div
-              key={artist.name}
-              className="flex-shrink-0 text-center"
-            >
-              <div className="relative mx-auto h-36 w-36 overflow-hidden rounded-full">
-                <Image
-                  src={artist.image}
-                  alt={artist.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-
-              <p className="mt-4 text-lg font-bold text-white">
-                {artist.name}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Recently Played */}
-      <section className="mt-20">
-        <h2 className="mb-8 text-3xl font-bold text-white">
-          Recently Played
-        </h2>
-
-        <div className="grid grid-cols-4 gap-6">
-          {songs.map((song) => (
-            <MusicCard
-              key={song.id}
-              song={song}
-              onClick={() => playSong(song)}
-            />
-          ))}
-        </div>
-      </section>
+      <BottomPlayer
+        song={currentSong}
+        isPlaying={isPlaying}
+        togglePlay={togglePlay}
+        progress={progress}
+        nextSong={nextSong}
+        previousSong={previousSong}
+        onSeek={seek}
+        volume={volume}
+        onVolumeChange={setVolume}
+        currentTime={currentTime}
+        duration={duration}
+        analyserRef={analyserRef}
+        dataArrayRef={dataArrayRef}
+        isExpanded={false}
+        onToggleExpanded={() => {}}
+      />
     </main>
   );
 }

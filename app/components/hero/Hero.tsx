@@ -3,246 +3,309 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
+  ChevronLeft,
+  ChevronRight,
   Play,
   Shuffle,
-  Music2,
 } from "lucide-react";
 
-import type { Song } from "../../types/song";
+import { usePlayer } from "@/app/context/AudioProvider";
 
-interface HeroProps {
-  song: Song;
-}
+export default function Hero() {
+  const {
+    currentSong,
+    playSong,
+    nextSong,
+    previousSong,
+    toggleShuffle,
+  } = usePlayer();
 
-export default function Hero({
-  song,
-}: HeroProps) {
+  const song = currentSong;
+
   return (
-    <section className="relative min-h-[680px] overflow-hidden rounded-[48px] border border-white/10 bg-[#090909]">
+    <section
+      key={song.id}
+      className="relative h-[540px] overflow-hidden rounded-[42px] border border-white/10 bg-black">
 
-      {/* Background Image */}
+      {/* Background */}
       <Image
         src={song.image}
         alt={song.title}
         fill
         priority
-        className="object-cover object-center opacity-20 scale-110 blur-xl"
+        className="object-cover scale-[1.7] opacity-15 blur-[100px]"
       />
 
-      {/* Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/55 to-black/20" />
 
-      {/* Purple Glow */}
-      <div
-        className="absolute left-[-150px] top-[-100px] h-[650px] w-[650px] rounded-full blur-[180px]"
-        style={{
-          background:
-            song.theme?.primary ??
-            "#8b5cf6",
-          opacity: 0.28,
+      {/* Ambient Light 1 */}
+      <motion.div
+        animate={{
+          x: [0, 40, 0],
+          y: [0, -20, 0],
         }}
-      />
-
-      {/* Red Glow */}
-      <div
-        className="absolute bottom-[-180px] right-[-150px] h-[700px] w-[700px] rounded-full blur-[200px]"
-        style={{
-          background:
-            song.theme?.secondary ??
-            "#ef4444",
-          opacity: 0.22,
+        transition={{
+          duration: 14,
+          repeat: Infinity,
+          ease: "easeInOut",
         }}
+        style={{
+          backgroundColor: `${song.theme.primary}33`,
+        }}
+        className="absolute left-1/4 top-[-180px] h-[720px] w-[720px] rounded-full blur-[190px]"
       />
 
-      {/* Content */}
-      <div className="relative z-10 flex h-full flex-col justify-between gap-12 px-16 py-28
-       lg:flex-row lg:items-center">
+      {/* Ambient Light 2 */}
+      <motion.div
+        animate={{
+          x: [0, -30, 0],
+          y: [0, 20, 0],
+        }}
+        transition={{
+          duration: 16,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        style={{
+          backgroundColor: `${song.theme.secondary}33`,
+        }}
+        className="absolute bottom-[-220px] right-[-120px] h-[760px] w-[760px] rounded-full blur-[200px]"
+      />
 
-        {/* LEFT */}
-        <div className="max-w-2xl">
+      {/* Ambient Light 3 */}
+      <motion.div
+        animate={{
+          scale: [1, 1.08, 1],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+        }}
+        style={{
+          backgroundColor: `${song.theme.accent}22`,
+        }}
+        className="absolute left-1/2 top-20 h-[520px] w-[520px] rounded-full blur-[170px]"
+      />
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            className="inline-flex items-center gap-3 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-2 text-sm font-semibold text-red-300 backdrop-blur-xl"
-          >
-            <Music2 size={16} />
-            Featured Release
-          </motion.div>
+      {/* Previous */}
+      <button
+        aria-label="Previous"
+        onClick={previousSong}
+        className="absolute left-8 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 backdrop-blur-xl transition hover:bg-white/10"
+      >
+        <ChevronLeft size={22} />
+      </button>
+
+      {/* Next */}
+      <button
+        aria-label="Next"
+        onClick={nextSong}
+        className="absolute right-8 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 backdrop-blur-xl transition hover:bg-white/10"
+      >
+        <ChevronRight size={22} />
+      </button>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex h-full items-center justify-between px-20">
+        {/* Left Content */}
+        <div className="flex h-full max-w-[620px] flex-col justify-center">
 
           <motion.p
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            transition={{
-              delay: .1,
-            }}
-            className="mt-8 uppercase tracking-[0.5em] text-red-400"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-sm font-bold uppercase tracking-[0.45em] text-red-400"
           >
-            Made For You
+            MADE FOR YOU
           </motion.p>
 
           <motion.h1
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: .15,
-            }}
-            className="mt-6 text-7xl font-black leading-none lg:text-[96px]"
+            key={song.id}
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mt-7 text-8xl font-black leading-none tracking-[-0.05em] text-white"
           >
             {song.title}
           </motion.h1>
 
           <motion.h2
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            transition={{
-              delay: .25,
-            }}
-            className="mt-5 text-3xl font-semibold text-zinc-300"
+            key={song.artist}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: .1 }}
+            className="mt-6 text-3xl font-semibold text-zinc-300"
           >
             {song.artist}
           </motion.h2>
 
-          <p className="mt-8 max-w-xl text-lg leading-8 text-zinc-400">
-            Based on your recent listening,
-            we created a cinematic experience
-            you'll never forget.
-          </p>
-
-          {/* Stats */}
-          <div className="mt-12 flex gap-12">
-
-            <div>
-              <h3 className="text-4xl font-black">
-                24M+
-              </h3>
-
-              <p className="mt-1 text-zinc-500">
-                Streams
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-4xl font-black">
-                #1
-              </h3>
-
-              <p className="mt-1 text-zinc-500">
-                Trending
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-4xl font-black">
-                4K
-              </h3>
-
-              <p className="mt-1 text-zinc-500">
-                Audio
-              </p>
-            </div>
-
-          </div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: .2 }}
+            className="mt-8 max-w-[540px] text-lg leading-8 text-zinc-400"
+          >
+            Experience{" "}
+            <span className="font-semibold text-white">
+              {song.album}
+            </span>{" "}
+            by{" "}
+            <span className="font-semibold text-white">
+              {song.artist}
+            </span>
+            . A premium{" "}
+            <span className="text-red-400">
+              {song.genre}
+            </span>{" "}
+            release from {song.year}.
+          </motion.p>
 
           {/* Buttons */}
-          <div className="mt-14 flex flex-wrap gap-5">
+
+          <div className="mt-10 flex gap-5">
 
             <motion.button
-              whileHover={{
-                scale: 1.05,
-              }}
-              whileTap={{
-                scale: .97,
-              }}
-              className="flex items-center gap-3 rounded-full bg-red-500 px-10 py-5 text-lg font-bold text-white shadow-[0_20px_80px_rgba(239,68,68,.45)]"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: .97 }}
+              onClick={toggleShuffle}
+              className="flex items-center gap-3 rounded-full style={{
+  background: song.theme.primary,
+}} px-9 py-4 text-lg font-bold text-white shadow-[0_25px_80px_rgba(255,40,90,.35)]
+ transition={{
+  duration: .45,
+}}"
             >
               <Play
                 size={22}
-                fill="white"
+                fill="currentColor"
               />
-              Play Mix
+              Play
             </motion.button>
 
             <motion.button
-              whileHover={{
-                scale: 1.05,
-              }}
-              whileTap={{
-                scale: .97,
-              }}
-              className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-10 py-5 text-lg font-bold backdrop-blur-xl"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: .97 }}
+              className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-9 py-4 text-lg font-semibold text-white backdrop-blur-xl"
             >
-              <Shuffle size={22} />
+              <Shuffle size={20} />
               Shuffle
             </motion.button>
 
           </div>
 
-        </div>
+          {/* Stats */}
 
-        {/* RIGHT */}
+          <div className="mt-14 flex gap-16">
+
+            <div>
+              <h3 className="text-5xl font-black">
+                {song.streams}
+              </h3>
+
+              <p className="mt-2 text-zinc-500">
+                Streams
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-5xl font-black">
+                {song.featured ? "#1 Trending" : "New"}
+              </h3>
+
+              <p className="mt-2 text-zinc-500">
+                Trending
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-5xl font-black">
+                {song.year}
+              </h3>
+
+              <p className="mt-2 text-zinc-500">
+                Released
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+        {/* Artwork */}
         <motion.div
+          key={song.id}
+          initial={{
+            opacity: 0,
+            scale: 0.9,
+            x: 40,
+          }}
           animate={{
-            y: [0, -12, 0],
-            rotate: [0, 1.5, 0],
+            opacity: 1,
+            scale: 1,
+            x: 0,
           }}
           transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
+            duration: 0.7,
           }}
-          className="relative flex justify-center lg:w-[45%]"
+          whileHover={{
+            scale: 1.03,
+            rotate: -1,
+          }}
+          className="relative mr-10 hidden lg:block"
         >
-
           <Image
             src={song.image}
             alt={song.title}
-            width={520}
-            height={520}
+            width={430}
+            height={430}
             priority
-            className="rounded-[42px] border border-white/10 object-cover shadow-[0_70px_180px_rgba(239,68,68,.35)]"
+            className="rounded-[36px] border border-white/10 object-cover style={{
+  boxShadow: `0 45px 130px ${song.theme.primary}66`,
+}}"
           />
 
-          <div className="absolute bottom-8 left-8 rounded-3xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
-
+          {/* Floating Card */}
+          <motion.div
+            animate={{
+              y: [0, -8, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute bottom-7 left-7 rounded-3xl border border-white/10 bg-black/55 px-6 py-5 backdrop-blur-xl"
+          >
             <p className="text-xs uppercase tracking-[0.4em] text-zinc-400">
               Featuring
             </p>
 
-            <h3 className="mt-3 text-3xl font-black">
+            <h3 className="mt-2 text-4xl font-black text-white">
               {song.title}
             </h3>
 
-            <p className="mt-2 text-zinc-300">
+            <p className="mt-1 text-lg text-zinc-300">
               {song.artist}
             </p>
 
-          </div>
+            <div className="mt-4 flex items-center gap-3">
 
+              <span
+                className="h-3 w-3 rounded-full"
+                style={{
+                  background: song.theme.primary,
+                }}
+              />
+
+              <span className="text-sm text-zinc-400">
+                {song.genre}
+              </span>
+
+            </div>
+          </motion.div>
         </motion.div>
 
       </div>
-
     </section>
   );
 }

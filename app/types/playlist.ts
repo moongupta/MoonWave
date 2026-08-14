@@ -1,8 +1,23 @@
-import type { Song } from "./song";
-
 export interface Playlist {
-  id: number;
-  name: string;
-  songs: Song[];
-  createdAt: string;
+  id: string;
+
+  title: string;
+
+  description: string;
+
+  cover: string;
+
+  creator: string;
+
+  followers: string;
+
+  songs: string[];
+
+  public: boolean;
+
+  theme: {
+    primary: string;
+    secondary: string;
+    accent: string;
+  };
 }
