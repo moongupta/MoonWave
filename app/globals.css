@@ -65,3 +65,144 @@ img {
   background: rgba(239, 68, 68, 0.35);
   color: white;
 }
+/* ==========================================================
+   MOONWAVE AURORA ENGINE
+========================================================== */
+
+.aurora{
+
+position:absolute;
+
+border-radius:9999px;
+
+filter:blur(180px);
+
+opacity:.28;
+
+will-change:transform;
+
+transform:translateZ(0);
+
+animation:auroraFloat 22s ease-in-out infinite;
+
+}
+
+.aurora-one{
+
+width:900px;
+height:900px;
+
+left:-250px;
+top:-250px;
+
+}
+
+.aurora-two{
+
+width:1000px;
+height:1000px;
+
+right:-260px;
+bottom:-260px;
+
+animation-duration:28s;
+
+}
+
+.aurora-three{
+
+width:550px;
+height:550px;
+
+left:50%;
+top:50%;
+
+transform:translate(-50%,-50%);
+
+opacity:.16;
+
+animation-duration:14s;
+
+}
+
+@keyframes auroraFloat{
+
+0%{
+transform:translate(0,0) scale(1);
+}
+
+25%{
+transform:translate(80px,-40px) scale(1.1);
+}
+
+50%{
+transform:translate(-50px,70px) scale(1.18);
+}
+
+75%{
+transform:translate(40px,-20px) scale(1.08);
+}
+
+100%{
+transform:translate(0,0) scale(1);
+}
+
+}
+
+.spotlight{
+
+position:absolute;
+
+inset:0;
+
+opacity:.35;
+
+pointer-events:none;
+
+}
+
+.noise-layer{
+
+position:absolute;
+
+inset:0;
+
+opacity:.02;
+
+background-image:
+radial-gradient(circle at 1px 1px,#fff 1px,transparent 0);
+
+background-size:22px 22px;
+
+}
+
+.overlay-layer{
+
+position:absolute;
+
+inset:0;
+
+background:
+linear-gradient(
+to bottom,
+rgba(0,0,0,.08),
+transparent 25%,
+transparent 75%,
+rgba(0,0,0,.35)
+);
+
+}
+
+.vignette-layer{
+
+position:absolute;
+
+inset:0;
+
+background:
+radial-gradient(
+circle,
+transparent 45%,
+rgba(0,0,0,.55) 100%
+);
+}

@@ -1,4 +1,11 @@
+export interface LyricLine {
+  time: number;
+  text: string;
+}
+
+
 export interface Song {
+
   id: string;
 
   title: string;
@@ -11,17 +18,21 @@ export interface Song {
 
   audio: string;
 
+
   duration: number;
 
   durationLabel: string;
+
 
   year: number;
 
   genre: string;
 
+
   streams: string;
 
   plays: number;
+
 
   explicit: boolean;
 
@@ -31,11 +42,29 @@ export interface Song {
 
   downloaded: boolean;
 
-  lyrics: string[];
+
+  lyrics: LyricLine[];
+
 
   theme: {
-    primary: string;
-    secondary: string;
-    accent: string;
-  };
+
+  primary: string;
+
+  secondary: string;
+
+  accent: string;
+
+  mood?: string;
+
+  energy?:
+    | "low"
+    | "medium"
+    | "high";
+
+  atmosphere?: string;
+
+  visualStyle?: string;
+
+};
+
 }

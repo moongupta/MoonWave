@@ -5,7 +5,7 @@ import { Music2 } from "lucide-react";
 import Link from "next/link";
 
 interface PlaylistCardProps {
-    id: number;
+    id: string;
     name: string;
     songs: number;
 }

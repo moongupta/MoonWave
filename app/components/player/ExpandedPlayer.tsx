@@ -7,9 +7,8 @@ import type { Song } from "@/app/types/song";
 
 import AlbumArtwork from "./expanded/AlbumArtwork";
 import PlayerBackground from "./expanded/PlayerBackground";
-import SongInfo from "./expanded/SongInfo";
-import ProgressSection from "./expanded/ProgressSection";
-import PlaybackControls from "./expanded/PlaybackControls";
+import Controls from "./Controls";
+import Progress from "./Progress";
 import LyricsPanel from "./expanded/LyricsPanel";
 import QueuePanel from "./expanded/QueuePanel";
 import FavoriteButton from "../player/FavoriteButton";
@@ -128,30 +127,26 @@ export default function ExpandedPlayer({
                 primaryColor={song.theme?.primary ?? "#7c3aed"}
               />
 
-              <div className="mt-12">
-                <SongInfo
-                  title={song.title}
-                  artist={song.artist}
-                />
-                <FavoriteButton songId={song.id} />
+              <div className="mt-12 flex flex-col items-center gap-5">
+
+                <h1 className="text-5xl font-black">
+                  {song.title}
+                </h1>
+
+                <p className="text-2xl text-zinc-400">
+                  {song.artist}
+                </p>
+
+                <FavoriteButton />
 
               </div>
 
               <div className="mt-10 w-full max-w-3xl">
-                <ProgressSection
-                  currentTime={currentTime}
-                  duration={duration}
-                  onSeek={onSeek}
-                />
+                <Progress />
               </div>
 
               <div className="mt-10">
-                <PlaybackControls
-                  isPlaying={isPlaying}
-                  togglePlay={togglePlay}
-                  previousSong={previousSong}
-                  nextSong={nextSong}
-                />
+                <Controls />
               </div>
             </div>
 

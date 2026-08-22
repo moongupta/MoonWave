@@ -32,17 +32,13 @@ export default function ArtistPage() {
         playSong,
     } = usePlayer();
 
-const progress =
-  duration > 0
-    ? (currentTime / duration) * 100
-    : 0;
+    const progress =
+        duration > 0
+            ? (currentTime / duration) * 100
+            : 0;
     return (
         <div className="relative flex h-screen overflow-hidden bg-[#07070a] text-white">
-            <AnimatedBackground
-                primary="#7c3aed"
-                secondary="#ef4444"
-                accent="#ffffff"
-            />
+            <AnimatedBackground />
 
             <Sidebar />
 
@@ -66,23 +62,7 @@ const progress =
                 </div>
             </main>
 
-            <BottomPlayer
-                song={currentSong}
-                isPlaying={isPlaying}
-                togglePlay={togglePlay}
-                progress={progress}
-                nextSong={nextSong}
-                previousSong={previousSong}
-                onSeek={seek}
-                volume={volume}
-                onVolumeChange={setVolume}
-                currentTime={currentTime}
-                duration={duration}
-                analyserRef={analyserRef}
-                dataArrayRef={dataArrayRef}
-                isExpanded={false}
-                onToggleExpanded={() => { }}
-            />
+            <BottomPlayer/>
         </div>
     );
 }

@@ -45,9 +45,7 @@ export default function MusicCard({
             "linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.15) 50%, transparent 80%)",
         }}
       />
-      <FavoriteButton
-        songId={song.id}
-      />
+      <FavoriteButton />
 
       {/* Cover */}
       <div className="relative z-10 overflow-hidden">

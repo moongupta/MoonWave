@@ -1,56 +1,114 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { LyricsProvider } from "../lyrics/LyricsProvider";
+import LyricsScroller from "../lyrics/LyricsScroller";
 
-interface LyricsPanelProps {
-  title?: string;
-}
+import { usePlayer } from "@/app/context/AudioProvider";
 
-const lyrics = [
-  "Wake me from the silence...",
-  "Show me where the future starts...",
-  "Every heartbeat tells a story...",
-  "Every dream becomes alive...",
-  "",
-  "Synchronized lyrics coming soon...",
-];
 
-export default function LyricsPanel({
-  title = "Lyrics",
-}: LyricsPanelProps) {
+export default function LyricsPanel() {
+
+  const {
+    currentSong,
+    currentTime,
+  } = usePlayer();
+
+
+  if (!currentSong) {
+    return null;
+  }
+
+
+  console.log("CURRENT SONG:", currentSong.title);
+
+  console.log(
+    "CURRENT LYRICS:",
+    currentSong.lyrics
+  );
+
+
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 30 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.25 }}
-      className="
-        w-[360px]
-        rounded-3xl
-        border
-        border-white/10
-        bg-white/5
-        p-6
-        backdrop-blur-2xl
-      "
-    >
-      <h2 className="mb-6 text-lg font-bold text-white">
-        {title}
-      </h2>
 
-      <div className="max-h-[420px] space-y-4 overflow-y-auto pr-2">
-        {lyrics.map((line, index) => (
-          <motion.p
-            key={index}
-            whileHover={{
-              x: 8,
-              color: "#ffffff",
-            }}
-            className="cursor-default text-lg leading-8 text-zinc-400 transition-colors"
+    <LyricsProvider>
+
+      <div
+        className="
+          relative
+          h-[720px]
+          w-[520px]
+          overflow-hidden
+          rounded-[36px]
+          border
+          border-white/10
+          bg-white/[0.04]
+          backdrop-blur-[40px]
+        "
+      >
+
+        <div
+          className="
+            absolute
+            inset-0
+            opacity-20
+          "
+          style={{
+            background:
+              `radial-gradient(
+                circle at top,
+                ${currentSong.theme.primary},
+                transparent 70%
+              )`
+          }}
+        />
+
+
+        <div
+          className="
+            relative
+            z-10
+            border-b
+            border-white/10
+            px-8
+            py-6
+          "
+        >
+
+          <h2
+            className="
+              text-3xl
+              font-bold
+              text-white
+            "
           >
-            {line || <span>&nbsp;</span>}
-          </motion.p>
-        ))}
+            Lyrics
+          </h2>
+
+
+          <p
+            className="
+              mt-2
+              text-zinc-400
+            "
+          >
+            {currentSong.title}
+            {" • "}
+            {currentSong.artist}
+          </p>
+
+
+        </div>
+
+
+        <LyricsScroller
+          lyrics={currentSong.lyrics}
+          currentTime={currentTime}
+        />
+
+
       </div>
-    </motion.div>
+
+
+    </LyricsProvider>
+
   );
 }

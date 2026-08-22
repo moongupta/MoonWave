@@ -35,7 +35,7 @@ export default function PlaylistsPage() {
                             <PlaylistCard
                                 key={playlist.id}
                                 id={playlist.id}
-                                name={playlist.name}
+                                name={playlist.title}
                                 songs={playlist.songs.length}
                             />
                         ))}

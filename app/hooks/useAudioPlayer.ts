@@ -84,6 +84,15 @@ export function useAudioPlayer() {
 
   const [repeatMode, setRepeatMode] =
     useState<RepeatMode>("off");
+  // =====================================================
+  // EXPANDED PLAYER
+  // =====================================================
+
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = useCallback(() => {
+    setExpanded((prev) => !prev);
+  }, []);
 
   // =====================================================
   // LIBRARY
@@ -255,12 +264,12 @@ export function useAudioPlayer() {
       muted
         ? 0
         : Math.max(
-            0,
-            Math.min(
-              1,
-              volume
-            )
-          );
+          0,
+          Math.min(
+            1,
+            volume
+          )
+        );
   }, [
     volume,
     muted,
@@ -417,6 +426,7 @@ export function useAudioPlayer() {
           await initializeAudioContext();
 
           await audio.play();
+          console.log("PLAYING:", song.title);
 
           setIsPlaying(
             true
@@ -459,6 +469,7 @@ export function useAudioPlayer() {
 
         try {
           await initializeAudioContext();
+
 
           await audio.play();
 
@@ -550,7 +561,7 @@ export function useAudioPlayer() {
             Math.min(
               time,
               duration ||
-                time
+              time
             )
           );
 
@@ -601,7 +612,7 @@ export function useAudioPlayer() {
             nextIndex =
               Math.floor(
                 Math.random() *
-                  queue.length
+                queue.length
               );
           } while (
             nextIndex ===
@@ -635,7 +646,7 @@ export function useAudioPlayer() {
           (old) => [
             ...old,
             queue[
-              currentIndex
+            currentIndex
             ],
           ]
         );
@@ -673,7 +684,7 @@ export function useAudioPlayer() {
         ) {
           const previous =
             history[
-              history.length - 1
+            history.length - 1
             ];
 
           setHistory(
@@ -698,7 +709,7 @@ export function useAudioPlayer() {
 
         void playSong(
           queue[
-            previousIndex
+          previousIndex
           ]
         );
       },
@@ -805,26 +816,46 @@ export function useAudioPlayer() {
       []
     );
 
-  const playNext =
-    useCallback(
-      (song: Song) => {
-        setQueue(
-          (old) => {
-            const copy =
-              [...old];
+  const playNext = useCallback(
+    (song: Song) => {
+      setQueue((old) => {
+        if (old.length === 0) {
+          return [song];
+        }
 
-            copy.splice(
-              currentIndex + 1,
-              0,
-              song
-            );
-
-            return copy;
-          }
+        // Remove the song if it already exists.
+        const filteredQueue = old.filter(
+          (item) => item.id !== song.id
         );
-      },
-      [currentIndex]
-    );
+
+        // Find the current song again
+        // after removing the selected song.
+        const newCurrentIndex =
+          filteredQueue.findIndex(
+            (item) => item.id === currentSong.id
+          );
+
+        // If current song somehow isn't in the queue,
+        // safely put the song at the beginning.
+        if (newCurrentIndex === -1) {
+          return [
+            song,
+            ...filteredQueue,
+          ];
+        }
+
+        // Insert immediately after current song.
+        filteredQueue.splice(
+          newCurrentIndex + 1,
+          0,
+          song
+        );
+
+        return filteredQueue;
+      });
+    },
+    [currentSong.id]
+  );
 
   const removeFromQueue =
     useCallback(
@@ -859,10 +890,10 @@ export function useAudioPlayer() {
             if (
               from < 0 ||
               from >=
-                old.length ||
+              old.length ||
               to < 0 ||
               to >=
-                old.length
+              old.length
             ) {
               return old;
             }
@@ -895,15 +926,26 @@ export function useAudioPlayer() {
   // SHUFFLE
   // =====================================================
 
-  const toggleShuffle =
-    useCallback(
-      () => {
-        setShuffle(
-          (old) => !old
-        );
-      },
-      []
+  const toggleShuffle = useCallback(() => {
+    setShuffle(prev => {
+      console.log("Shuffle:", !prev);
+      return !prev;
+    });
+  }, []);
+
+  const playShuffle = useCallback(async () => {
+    if (queue.length === 0) return;
+
+    const randomIndex = Math.floor(
+      Math.random() * queue.length
     );
+    console.log("Random Index:", randomIndex);
+    console.log("Random Song:", queue[randomIndex].title);
+
+    setShuffle(true);
+
+    await playSong(queue[randomIndex]);
+  }, [queue, playSong]);
 
   // =====================================================
   // REPEAT
@@ -1034,6 +1076,7 @@ export function useAudioPlayer() {
     currentTime,
     duration,
     progress,
+    playShuffle,
 
     // Audio
     volume,
@@ -1094,5 +1137,9 @@ export function useAudioPlayer() {
     analyserRef,
     sourceRef,
     dataArrayRef,
+    // Expanded Player
+    expanded,
+    setExpanded,
+    toggleExpanded,
   };
 }

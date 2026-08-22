@@ -1,21 +1,18 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePlayer } from "@/app/context/AudioProvider";
+import { useTheme } from "@/app/context/ThemeProvider";
 
-interface AudioVisualizerProps {
-  analyserRef: React.RefObject<AnalyserNode | null>;
-  dataArrayRef: React.RefObject<Uint8Array | null>;
-  isPlaying: boolean;
-  color: string;
-}
-
-export default function AudioVisualizer({
-  analyserRef,
-  dataArrayRef,
-  isPlaying,
-  color,
-}: AudioVisualizerProps) {
+export default function AudioVisualizer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const {
+    analyserRef,
+    dataArrayRef,
+  } = usePlayer();
+
+  const theme = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -26,87 +23,96 @@ export default function AudioVisualizer({
 
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    let frame: number;
 
-    canvas.width = 220 * dpr;
-    canvas.height = 220 * dpr;
-
-    ctx.scale(dpr, dpr);
-
-    let animationId = 0;
-
-    const draw = () => {
-      animationId = requestAnimationFrame(draw);
-
-      ctx.clearRect(0, 0, 220, 220);
-
+    const render = () => {
       const analyser = analyserRef.current;
-      const dataArray = dataArrayRef.current;
+      const data = dataArrayRef.current;
 
-      if (!analyser || !dataArray || !isPlaying) return;
+      if (analyser && data) {
+        analyser.getByteFrequencyData(data);
 
-      analyser.getByteFrequencyData(dataArray);
+        ctx.clearRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
 
-      const cx = 110;
-      const cy = 110;
+        const bars = 40;
 
-      const radius = 46;
+        const barWidth =
+          canvas.width / bars;
 
-      const bars = 96;
+        for (let i = 0; i < bars; i++) {
+          const value =
+            data[i] / 255;
 
-      for (let i = 0; i < bars; i++) {
-        const value =
-          dataArray[Math.floor((i / bars) * dataArray.length)] / 255;
+          const height =
+            Math.max(
+              6,
+              value * canvas.height * 0.95
+            );
 
-        const barHeight = value * 32 + 4;
+          const x = i * barWidth;
 
-        const angle = (Math.PI * 2 * i) / bars;
+          const y = canvas.height - height;
 
-        const x1 = cx + Math.cos(angle) * radius;
-        const y1 = cy + Math.sin(angle) * radius;
+          const radius = 6;
 
-        const x2 =
-          cx +
-          Math.cos(angle) * (radius + barHeight);
+          const gradient = ctx.createLinearGradient(
+            0,
+            y,
+            0,
+            canvas.height
+          );
 
-        const y2 =
-          cy +
-          Math.sin(angle) * (radius + barHeight);
+          gradient.addColorStop(0, theme.accent);
+          gradient.addColorStop(0.4, theme.primary);
+          gradient.addColorStop(1, theme.secondary);
 
-        ctx.beginPath();
+          ctx.fillStyle = gradient;
 
-        ctx.moveTo(x1, y1);
+          ctx.beginPath();
 
-        ctx.lineTo(x2, y2);
+          ctx.roundRect(
+            x,
+            y,
+            barWidth - 4,
+            height,
+            radius
+          );
+          ctx.shadowBlur = 18;
 
-        ctx.lineWidth = 2;
+          ctx.shadowColor = theme.primary;
 
-        ctx.strokeStyle = color;
+          ctx.fill();
 
-        ctx.shadowColor = color;
-
-        ctx.shadowBlur = 10;
-
-        ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
       }
+
+      frame =
+        requestAnimationFrame(render);
     };
 
-    draw();
+    render();
 
-    return () => cancelAnimationFrame(animationId);
+    return () =>
+      cancelAnimationFrame(frame);
+
   }, [
     analyserRef,
     dataArrayRef,
-    isPlaying,
-    color,
+    theme,
   ]);
 
   return (
     <canvas
       ref={canvasRef}
-      width={220}
-      height={220}
-      className="h-20 w-20"
+      width={420}
+      height={70}
+      className="rounded-xl"
     />
   );
 }

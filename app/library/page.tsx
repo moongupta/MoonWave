@@ -43,11 +43,7 @@ export default function LibraryPage() {
         <Sidebar activePage="Library" />
 
         <main className="relative flex-1 overflow-y-auto">
-          <AnimatedBackground
-            primary="#7c3aed"
-            secondary="#ec4899"
-            accent="#ffffff"
-          />
+          <AnimatedBackground />
 
           <div className="relative z-10">
             <Header />
@@ -73,23 +69,7 @@ export default function LibraryPage() {
         </main>
       </div>
 
-      <BottomPlayer
-        song={currentSong}
-        isPlaying={isPlaying}
-        togglePlay={togglePlay}
-        progress={progress}
-        nextSong={nextSong}
-        previousSong={previousSong}
-        onSeek={seek}
-        volume={volume}
-        onVolumeChange={setVolume}
-        currentTime={currentTime}
-        duration={duration}
-        analyserRef={analyserRef}
-        dataArrayRef={dataArrayRef}
-        isExpanded={false}
-        onToggleExpanded={() => {}}
-      />
+      <BottomPlayer />
     </main>
   );
 }

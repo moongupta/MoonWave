@@ -1,188 +1,118 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 
-import {
-  Maximize2,
-  Pause,
-  Play,
-  Repeat2,
-  SkipBack,
-  SkipForward,
-  Volume2,
-} from "lucide-react";
+import Controls from "./Controls";
+import Progress from "./Progress";
+import PlayerLeft from "./PlayerLeft";
+import PlayerRight from "./PlayerRight";
+import ExpandedPlayer from "./ExpandedPlayer";
+import QueueDrawer from "./QueueDrawer";
 
 import { usePlayer } from "@/app/context/AudioProvider";
-import { formatTime } from "@/app/utils/formatTime";
 
-import ProgressBar from "./ProgressBar";
-import VolumeSlider from "./VolumeSlider";
-
-interface BottomPlayerProps {
-  isExpanded: boolean;
-  onToggleExpanded: () => void;
-}
-
-export default function BottomPlayer({
-  isExpanded,
-  onToggleExpanded,
-}: BottomPlayerProps) {
+export default function BottomPlayer() {
   const {
     currentSong,
-
+    expanded,
+    toggleExpanded,
     isPlaying,
-
     togglePlay,
-
     nextSong,
     previousSong,
-
-    progress,
-    seek,
-
-    volume,
-    setVolume,
-
     currentTime,
     duration,
+    seek,
   } = usePlayer();
 
+  const [queueOpen, setQueueOpen] =
+    useState(false);
+
   return (
-    <footer className="bottom-player">
-      <div className="player-main">
+    <>
+      {/* ================================
+          BOTTOM PLAYER
+      ================================= */}
 
-        {/* Left */}
-
-        <button
-          onClick={onToggleExpanded}
-          className="player-track"
+      {!expanded && (
+        <footer
+          className="
+            fixed
+            bottom-4
+            left-1/2
+            z-50
+            flex
+            h-[110px]
+            w-[96%]
+            max-w-[1900px]
+            -translate-x-1/2
+            items-center
+            rounded-[34px]
+            border
+            border-white/10
+            bg-black/55
+            px-8
+            backdrop-blur-3xl
+          "
+          style={{
+            boxShadow: `
+              0 25px 80px rgba(0,0,0,.55),
+              inset 0 0 120px ${currentSong.theme.primary}20
+            `,
+          }}
         >
-          <Image
-            src={currentSong.image}
-            alt={currentSong.title}
-            width={72}
-            height={72}
-          />
+          {/* Left */}
+          <PlayerLeft />
 
-          <span>
-            <b>{currentSong.title}</b>
+          {/* Center */}
+          <div className="flex flex-1 flex-col px-10">
 
-            <small>
-              {currentSong.artist}
-            </small>
-          </span>
-        </button>
+            <Controls />
 
-        {/* Center */}
-
-        <div className="player-controls">
-
-          <div>
-
-            <button aria-label="Shuffle">
-              <span className="text-lg">
-                ⌘
-              </span>
-            </button>
-
-            <button
-              aria-label="Previous"
-              onClick={previousSong}
-            >
-              <SkipBack
-                size={23}
-                fill="currentColor"
-              />
-            </button>
-
-            <button
-              aria-label={
-                isPlaying
-                  ? "Pause"
-                  : "Play"
-              }
-              onClick={togglePlay}
-              className="play-control"
-            >
-              {isPlaying ? (
-                <Pause
-                  size={28}
-                  fill="currentColor"
-                />
-              ) : (
-                <Play
-                  size={28}
-                  fill="currentColor"
-                  className="ml-1"
-                />
-              )}
-            </button>
-
-            <button
-              aria-label="Next"
-              onClick={nextSong}
-            >
-              <SkipForward
-                size={23}
-                fill="currentColor"
-              />
-            </button>
-
-            <button aria-label="Repeat">
-              <Repeat2 size={21} />
-            </button>
+            <div className="mt-4">
+              <Progress />
+            </div>
 
           </div>
 
-          <div className="player-progress">
-
-            <time>
-              {formatTime(currentTime)}
-            </time>
-
-            <ProgressBar
-              progress={progress}
-              duration={duration}
-              onSeek={seek}
-            />
-
-            <time>
-              {formatTime(duration)}
-            </time>
-
-          </div>
-
-        </div>
-
-        {/* Right */}
-
-        <div className="player-tools">
-
-          <Volume2 size={20} />
-
-          <VolumeSlider
-            volume={volume}
-            onChange={setVolume}
+          {/* Right */}
+          <PlayerRight
+            onQueue={() =>
+              setQueueOpen(true)
+            }
+            onExpand={toggleExpanded}
           />
 
-          <button aria-label="Lyrics">
-            ☷
-          </button>
+        </footer>
+      )}
 
-          <button aria-label="Comments">
-            ▣
-          </button>
+      {/* ================================
+          QUEUE DRAWER
+      ================================= */}
 
-          <button
-            aria-label="Expand"
-            onClick={onToggleExpanded}
-          >
-            <Maximize2 size={18} />
-          </button>
+      <QueueDrawer
+        open={queueOpen}
+        onClose={() =>
+          setQueueOpen(false)
+        }
+      />
 
-        </div>
+      {/* ================================
+          EXPANDED PLAYER
+      ================================= */}
 
-      </div>
-    </footer>
+      <ExpandedPlayer
+        open={expanded}
+        song={currentSong}
+        isPlaying={isPlaying}
+        togglePlay={togglePlay}
+        nextSong={nextSong}
+        previousSong={previousSong}
+        currentTime={currentTime}
+        duration={duration}
+        onSeek={seek}
+        onClose={toggleExpanded}
+      />
+    </>
   );
 }

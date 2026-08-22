@@ -15,9 +15,11 @@ export default function Hero() {
   const {
     currentSong,
     playSong,
-    nextSong,
+    playShuffle,
     previousSong,
+    nextSong,
     toggleShuffle,
+    shuffle,
   } = usePlayer();
 
   const song = currentSong;
@@ -167,14 +169,15 @@ export default function Hero() {
 
             <motion.button
               whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: .97 }}
-              onClick={toggleShuffle}
-              className="flex items-center gap-3 rounded-full style={{
-  background: song.theme.primary,
-}} px-9 py-4 text-lg font-bold text-white shadow-[0_25px_80px_rgba(255,40,90,.35)]
- transition={{
-  duration: .45,
-}}"
+              whileTap={{ scale: 0.97 }}
+              transition={{
+                duration: 0.45,
+              }}
+              onClick={playShuffle}
+              style={{
+                background: song.theme.primary,
+              }}
+              className="flex items-center gap-3 rounded-full px-9 py-4 text-lg font-bold text-white shadow-[0_25px_80px_rgba(255,40,90,.35)]"
             >
               <Play
                 size={22}
@@ -184,9 +187,11 @@ export default function Hero() {
             </motion.button>
 
             <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: .97 }}
-              className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-9 py-4 text-lg font-semibold text-white backdrop-blur-xl"
+              onClick={() => {
+                console.log("🔥 SHUFFLE BUTTON CLICKED");
+                playShuffle();
+              }}
+              className="..."
             >
               <Shuffle size={20} />
               Shuffle
@@ -259,9 +264,10 @@ export default function Hero() {
             width={430}
             height={430}
             priority
-            className="rounded-[36px] border border-white/10 object-cover style={{
-  boxShadow: `0 45px 130px ${song.theme.primary}66`,
-}}"
+            style={{
+              boxShadow: `0 45px 130px ${song.theme.primary}66`,
+            }}
+            className="rounded-[36px] border border-white/10 object-cover"
           />
 
           {/* Floating Card */}

@@ -2,30 +2,29 @@
 
 import { Heart } from "lucide-react";
 import { motion } from "framer-motion";
-import { useLibrary } from "@/app/context/LibraryProvider";
+import { usePlayer } from "@/app/context/AudioProvider";
 
-interface FavoriteButtonProps {
-  songId: number;
-}
-
-export default function FavoriteButton({
-  songId,
-}: FavoriteButtonProps) {
-  const { isFavorite, toggleFavorite } = useLibrary();
-
-  const active = isFavorite(songId);
+export default function FavoriteButton() {
+  const {
+    currentSong,
+    isLiked,
+    toggleLike,
+  } = usePlayer();
 
   return (
     <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-      onClick={() => toggleFavorite(songId)}
-      className="rounded-full p-2"
+      whileHover={{ scale: 1.08 }}
+      whileTap={{ scale: 0.94 }}
+      onClick={() => toggleLike(currentSong)}
+      className={`flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 ${
+        isLiked
+          ? "border-red-500 bg-red-500 text-white"
+          : "border-white/10 bg-white/5 text-zinc-300"
+      }`}
     >
       <Heart
-        size={20}
-        className={active ? "text-red-500" : "text-zinc-400"}
-        fill={active ? "currentColor" : "none"}
+        size={18}
+        fill={isLiked ? "currentColor" : "none"}
       />
     </motion.button>
   );
