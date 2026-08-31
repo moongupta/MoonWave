@@ -14,38 +14,84 @@ import { usePlayer } from "@/app/context/AudioProvider";
 export default function Hero() {
   const {
     currentSong,
-    playSong,
     playShuffle,
     previousSong,
     nextSong,
-    toggleShuffle,
-    shuffle,
   } = usePlayer();
 
   const song = currentSong;
 
   return (
     <section
-      key={song.id}
-      className="relative h-[540px] overflow-hidden rounded-[42px] border border-white/10 bg-black">
+      className="
+        relative
+        isolate
+        w-full
+        min-h-102.5
+        shrink-0
+        overflow-hidden
+        rounded-[28px]
+        border
+        border-white/10
+        bg-black
+        shadow-[0_35px_120px_rgba(0,0,0,0.45)]
 
-      {/* Background */}
+        sm:min-h-112.5
+
+        lg:h-140
+        lg:min-h-0
+        lg:rounded-4xl
+      "
+    >
+      {/* =====================================================
+          BACKGROUND ART
+      ====================================================== */}
+
       <Image
         src={song.image}
-        alt={song.title}
+        alt=""
         fill
         priority
-        className="object-cover scale-[1.7] opacity-15 blur-[100px]"
+        sizes="(max-width: 1023px) 100vw, 1200px"
+        className="
+          object-cover
+          scale-[1.5]
+          opacity-20
+          blur-[70px]
+
+          lg:scale-[1.6]
+          lg:blur-[90px]
+        "
       />
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/55 to-black/20" />
+      {/* =====================================================
+          DARK GRADIENT
+      ====================================================== */}
 
-      {/* Ambient Light 1 */}
+      <div
+        className="
+          absolute
+          inset-0
+          bg-linear-to-b
+          from-black/70
+          via-black/85
+          to-black
+
+          lg:bg-linear-to-r
+          lg:from-black
+          lg:via-black/70
+          lg:to-black/20
+        "
+      />
+
+      {/* =====================================================
+          MOVING LIGHT
+      ====================================================== */}
+
       <motion.div
         animate={{
           x: [0, 40, 0],
-          y: [0, -20, 0],
+          y: [0, -30, 0],
         }}
         transition={{
           duration: 14,
@@ -53,100 +99,302 @@ export default function Hero() {
           ease: "easeInOut",
         }}
         style={{
-          backgroundColor: `${song.theme.primary}33`,
+          backgroundColor: `${song.theme.primary}44`,
         }}
-        className="absolute left-1/4 top-[-180px] h-[720px] w-[720px] rounded-full blur-[190px]"
+        className="
+          pointer-events-none
+          absolute
+          -top-32
+          left-1/2
+          h-72
+          w-72
+          -translate-x-1/2
+          rounded-full
+          blur-[110px]
+
+          lg:-top-40
+          lg:h-100
+          lg:w-100
+          lg:blur-[150px]
+        "
       />
 
-      {/* Ambient Light 2 */}
-      <motion.div
-        animate={{
-          x: [0, -30, 0],
-          y: [0, 20, 0],
-        }}
-        transition={{
-          duration: 16,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        style={{
-          backgroundColor: `${song.theme.secondary}33`,
-        }}
-        className="absolute bottom-[-220px] right-[-120px] h-[760px] w-[760px] rounded-full blur-[200px]"
-      />
+      {/* =====================================================
+          PREVIOUS SONG
+      ====================================================== */}
 
-      {/* Ambient Light 3 */}
-      <motion.div
-        animate={{
-          scale: [1, 1.08, 1],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-        }}
-        style={{
-          backgroundColor: `${song.theme.accent}22`,
-        }}
-        className="absolute left-1/2 top-20 h-[520px] w-[520px] rounded-full blur-[170px]"
-      />
-
-      {/* Previous */}
       <button
-        aria-label="Previous"
+        type="button"
         onClick={previousSong}
-        className="absolute left-8 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 backdrop-blur-xl transition hover:bg-white/10"
+        aria-label="Previous song"
+        className="
+          absolute
+          left-2
+          top-1/2
+          z-30
+          flex
+          h-8
+          w-8
+          -translate-y-1/2
+          items-center
+          justify-center
+          rounded-full
+          border
+          border-white/10
+          bg-black/50
+          text-white
+          backdrop-blur-xl
+          transition
+          duration-200
+          hover:bg-white/10
+          active:scale-95
+
+          sm:left-3
+          sm:h-9
+          sm:w-9
+
+          lg:left-8
+          lg:h-10
+          lg:w-10
+        "
       >
-        <ChevronLeft size={22} />
+        <ChevronLeft size={18} />
       </button>
 
-      {/* Next */}
+      {/* =====================================================
+          NEXT SONG
+      ====================================================== */}
+
       <button
-        aria-label="Next"
+        type="button"
         onClick={nextSong}
-        className="absolute right-8 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 backdrop-blur-xl transition hover:bg-white/10"
+        aria-label="Next song"
+        className="
+          absolute
+          right-2
+          top-1/2
+          z-30
+          flex
+          h-8
+          w-8
+          -translate-y-1/2
+          items-center
+          justify-center
+          rounded-full
+          border
+          border-white/10
+          bg-black/50
+          text-white
+          backdrop-blur-xl
+          transition
+          duration-200
+          hover:bg-white/10
+          active:scale-95
+
+          sm:right-3
+          sm:h-9
+          sm:w-9
+
+          lg:right-8
+          lg:h-10
+          lg:w-10
+        "
       >
-        <ChevronRight size={22} />
+        <ChevronRight size={18} />
       </button>
 
-      {/* Main Content */}
-      <div className="relative z-10 flex h-full items-center justify-between px-20">
-        {/* Left Content */}
-        <div className="flex h-full max-w-[620px] flex-col justify-center">
+      {/* =====================================================
+          MAIN CONTENT
+      ====================================================== */}
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-sm font-bold uppercase tracking-[0.45em] text-red-400"
+      <div
+        className="
+          relative
+          z-20
+          flex
+          min-h-102.5
+          flex-col
+          px-4
+          py-5
+
+          sm:min-h-112.5
+          sm:px-6
+          sm:py-7
+
+          lg:h-full
+          lg:min-h-0
+          lg:flex-row
+          lg:items-center
+          lg:justify-between
+          lg:px-16
+          lg:py-0
+        "
+      >
+        {/* =================================================
+            MOBILE ARTWORK
+        ================================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            scale: 0.92,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
+          transition={{
+            duration: 0.45,
+            ease: "easeOut",
+          }}
+          className="
+            relative
+            mx-auto
+            mb-4
+            h-36
+            w-36
+            shrink-0
+            overflow-hidden
+            rounded-2xl
+            border
+            border-white/10
+
+            sm:mb-5
+            sm:h-40
+            sm:w-40
+            sm:rounded-[22px]
+
+            lg:hidden
+          "
+          style={{
+            boxShadow: `0 25px 70px ${song.theme.primary}55`,
+          }}
+        >
+          <Image
+            src={song.image}
+            alt={song.title}
+            fill
+            sizes="160px"
+            className="object-cover"
+          />
+        </motion.div>
+
+        {/* =================================================
+            TEXT CONTENT
+        ================================================== */}
+
+        <div
+          className="
+            w-full
+            max-w-162.5
+            text-center
+
+            lg:text-left
+          "
+        >
+          {/* Made For You */}
+
+          <p
+            className="
+              text-[9px]
+              font-bold
+              uppercase
+              tracking-[0.3em]
+              text-white/50
+
+              sm:text-[10px]
+              sm:tracking-[0.35em]
+            "
           >
-            MADE FOR YOU
-          </motion.p>
+            Made For You
+          </p>
 
-          <motion.h1
-            key={song.id}
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mt-7 text-8xl font-black leading-none tracking-[-0.05em] text-white"
+          {/* Title */}
+
+          <h1
+            className="
+              mt-2
+              text-[34px]
+              font-black
+              leading-[0.92]
+              tracking-tighter
+              text-white
+
+              sm:text-5xl
+
+              lg:mt-4
+              lg:text-8xl
+            "
           >
             {song.title}
-          </motion.h1>
+          </h1>
 
-          <motion.h2
-            key={song.artist}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: .1 }}
-            className="mt-6 text-3xl font-semibold text-zinc-300"
+          {/* Artist / Genre */}
+
+          <div
+            className="
+              mt-2
+              flex
+              items-center
+              justify-center
+              gap-1.5
+
+              lg:mt-4
+              lg:justify-start
+              lg:gap-2
+            "
           >
-            {song.artist}
-          </motion.h2>
+            <h2
+              className="
+                text-base
+                font-bold
+                text-white
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: .2 }}
-            className="mt-8 max-w-[540px] text-lg leading-8 text-zinc-400"
+                sm:text-lg
+
+                lg:text-3xl
+              "
+            >
+              {song.artist}
+            </h2>
+
+            <span className="text-white/30">
+              •
+            </span>
+
+            <span
+              className="
+                text-xs
+                text-white/50
+
+                sm:text-sm
+
+                lg:text-base
+              "
+            >
+              {song.genre}
+            </span>
+          </div>
+
+          {/* Description */}
+
+          <p
+            className="
+              mx-auto
+              mt-2
+              max-w-130
+              text-xs
+              leading-5
+              text-white/50
+
+              sm:mt-3
+              sm:text-sm
+              sm:leading-6
+
+              lg:mx-0
+              lg:mt-5
+              lg:text-lg
+            "
           >
             Experience{" "}
             <span className="font-semibold text-white">
@@ -156,162 +404,230 @@ export default function Hero() {
             <span className="font-semibold text-white">
               {song.artist}
             </span>
-            . A premium{" "}
-            <span className="text-red-400">
-              {song.genre}
-            </span>{" "}
-            release from {song.year}.
-          </motion.p>
+            . Premium {song.genre} release.
+          </p>
 
-          {/* Buttons */}
+          {/* =================================================
+              ACTION BUTTONS
+          ================================================== */}
 
-          <div className="mt-10 flex gap-5">
+          <div
+            className="
+              mt-4
+              flex
+              justify-center
+              gap-2
 
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{
-                duration: 0.45,
-              }}
+              sm:mt-5
+              sm:gap-3
+
+              lg:mt-7
+              lg:justify-start
+            "
+          >
+            {/* Play */}
+
+            <button
+              type="button"
               onClick={playShuffle}
               style={{
-                background: song.theme.primary,
+                backgroundColor: song.theme.primary,
               }}
-              className="flex items-center gap-3 rounded-full px-9 py-4 text-lg font-bold text-white shadow-[0_25px_80px_rgba(255,40,90,.35)]"
+              className="
+                flex
+                h-9
+                items-center
+                gap-1.5
+                rounded-full
+                px-4
+                text-xs
+                font-bold
+                text-white
+                transition
+                duration-200
+                hover:scale-105
+                active:scale-95
+
+                sm:h-10
+                sm:px-5
+                sm:text-sm
+
+                lg:h-12
+                lg:gap-2
+                lg:px-7
+              "
             >
               <Play
-                size={22}
-                fill="currentColor"
+                size={15}
+                fill="white"
               />
+
               Play
-            </motion.button>
+            </button>
 
-            <motion.button
-              onClick={() => {
-                console.log("🔥 SHUFFLE BUTTON CLICKED");
-                playShuffle();
-              }}
-              className="..."
+            {/* Shuffle */}
+
+            <button
+              type="button"
+              onClick={playShuffle}
+              className="
+                flex
+                h-9
+                items-center
+                gap-1.5
+                rounded-full
+                border
+                border-white/10
+                bg-white/5
+                px-4
+                text-xs
+                font-bold
+                text-white
+                backdrop-blur-xl
+                transition
+                duration-200
+                hover:bg-white/10
+                active:scale-95
+
+                sm:h-10
+                sm:px-5
+                sm:text-sm
+
+                lg:h-12
+                lg:gap-2
+                lg:px-7
+              "
             >
-              <Shuffle size={20} />
+              <Shuffle size={15} />
+
               Shuffle
-            </motion.button>
-
+            </button>
           </div>
 
-          {/* Stats */}
+          {/* =================================================
+              STATS
+          ================================================== */}
 
-          <div className="mt-14 flex gap-16">
+          <div
+            className="
+              mt-4
+              flex
+              justify-center
+              gap-7
 
-            <div>
-              <h3 className="text-5xl font-black">
-                {song.streams}
-              </h3>
+              sm:mt-5
+              sm:gap-8
 
-              <p className="mt-2 text-zinc-500">
-                Streams
-              </p>
-            </div>
+              lg:mt-8
+              lg:justify-start
+              lg:gap-10
+            "
+          >
+            <Stat
+              value={song.streams}
+              label="Streams"
+            />
 
-            <div>
-              <h3 className="text-5xl font-black">
-                {song.featured ? "#1 Trending" : "New"}
-              </h3>
+            <Stat
+              value={song.featured ? "#1" : "NEW"}
+              label="Trending"
+            />
 
-              <p className="mt-2 text-zinc-500">
-                Trending
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-5xl font-black">
-                {song.year}
-              </h3>
-
-              <p className="mt-2 text-zinc-500">
-                Released
-              </p>
-            </div>
-
+            <Stat
+              value={song.year}
+              label="Released"
+            />
           </div>
-
         </div>
-        {/* Artwork */}
+
+        {/* =================================================
+            DESKTOP ARTWORK
+        ================================================== */}
+
         <motion.div
-          key={song.id}
           initial={{
             opacity: 0,
-            scale: 0.9,
-            x: 40,
+            scale: 0.95,
           }}
           animate={{
             opacity: 1,
             scale: 1,
-            x: 0,
           }}
           transition={{
-            duration: 0.7,
+            duration: 0.5,
+            ease: "easeOut",
           }}
-          whileHover={{
-            scale: 1.03,
-            rotate: -1,
-          }}
-          className="relative mr-10 hidden lg:block"
+          className="
+            relative
+            hidden
+            h-95
+            w-95
+            shrink-0
+
+            lg:block
+
+            xl:h-107.5
+            xl:w-107.5
+          "
         >
           <Image
             src={song.image}
             alt={song.title}
-            width={430}
-            height={430}
-            priority
-            style={{
-              boxShadow: `0 45px 130px ${song.theme.primary}66`,
-            }}
-            className="rounded-[36px] border border-white/10 object-cover"
+            fill
+            sizes="430px"
+            className="
+              rounded-[36px]
+              border
+              border-white/10
+              object-cover
+              shadow-[0_40px_100px_rgba(0,0,0,0.5)]
+            "
           />
-
-          {/* Floating Card */}
-          <motion.div
-            animate={{
-              y: [0, -8, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="absolute bottom-7 left-7 rounded-3xl border border-white/10 bg-black/55 px-6 py-5 backdrop-blur-xl"
-          >
-            <p className="text-xs uppercase tracking-[0.4em] text-zinc-400">
-              Featuring
-            </p>
-
-            <h3 className="mt-2 text-4xl font-black text-white">
-              {song.title}
-            </h3>
-
-            <p className="mt-1 text-lg text-zinc-300">
-              {song.artist}
-            </p>
-
-            <div className="mt-4 flex items-center gap-3">
-
-              <span
-                className="h-3 w-3 rounded-full"
-                style={{
-                  background: song.theme.primary,
-                }}
-              />
-
-              <span className="text-sm text-zinc-400">
-                {song.genre}
-              </span>
-
-            </div>
-          </motion.div>
         </motion.div>
-
       </div>
     </section>
+  );
+}
+
+/* ==========================================================
+   STAT COMPONENT
+========================================================== */
+
+function Stat({
+  value,
+  label,
+}: {
+  value: string | number;
+  label: string;
+}) {
+  return (
+    <div className="text-center">
+      <h3
+        className="
+          text-xl
+          font-black
+          text-white
+
+          sm:text-2xl
+
+          lg:text-3xl
+        "
+      >
+        {value}
+      </h3>
+
+      <p
+        className="
+          text-[8px]
+          uppercase
+          tracking-wide
+          text-white/40
+
+          sm:text-[9px]
+        "
+      >
+        {label}
+      </p>
+    </div>
   );
 }

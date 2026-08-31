@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 import Sidebar from "./components/layout/Sidebar";
 import Header from "./components/layout/Header";
@@ -12,6 +12,7 @@ import MoodChips from "./components/sections/MoodChips";
 import QuickPicks from "./components/sections/QuickPicks";
 import ListenAgain from "./components/sections/ListenAgain";
 import NowPlaying from "./components/sections/NowPlaying";
+import NewReleases from "./components/sections/NewReleases";
 
 import AnimatedBackground from "./components/effects/AnimatedBackground";
 
@@ -23,7 +24,6 @@ import CommandPalette from "./components/command/CommandPalette";
 import { usePlayer } from "./context/AudioProvider";
 
 export default function Home() {
-
   const {
     currentSong,
     isPlaying,
@@ -33,109 +33,79 @@ export default function Home() {
     previousSong,
   } = usePlayer();
 
-  const [commandOpen, setCommandOpen] =
-    useState(false);
-
-  
+  const [commandOpen, setCommandOpen] = useState(false);
 
   useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
 
-    const handleKeyDown = (
-      event: KeyboardEvent
-    ) => {
-
-      const target =
-        event.target as HTMLElement;
-
+      // Don't trigger shortcuts while typing
       if (
         target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA"
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
       ) {
         return;
       }
 
+      // Command palette: Cmd/Ctrl + K
       if (
-        (event.metaKey ||
-          event.ctrlKey) &&
+        (event.metaKey || event.ctrlKey) &&
         event.key.toLowerCase() === "k"
       ) {
         event.preventDefault();
-
         setCommandOpen(true);
-
         return;
       }
 
-      if (
-        event.key === "Escape"
-      ) {
+      // Escape
+      if (event.key === "Escape") {
         setCommandOpen(false);
-
         return;
       }
 
+      // Player keyboard controls
       switch (event.code) {
-
         case "Space":
-
           event.preventDefault();
-
           togglePlay();
-
           break;
 
         case "ArrowRight":
-
           nextSong();
-
           break;
 
         case "ArrowLeft":
-
           previousSong();
-
           break;
 
+        default:
+          break;
       }
-
     };
 
-    window.addEventListener(
-      "keydown",
-      handleKeyDown
-    );
+    window.addEventListener("keydown", handleKeyDown);
 
-    return () =>
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
-
-  }, [
-    togglePlay,
-    nextSong,
-    previousSong,
-  ]);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [togglePlay, nextSong, previousSong]);
 
   return (
-  <main className="app-shell min-h-screen overflow-hidden bg-black text-white">
+    <main className="app-shell min-h-screen w-full overflow-hidden bg-black text-white">
+      <div className="flex min-h-screen w-full">
+        {/* SIDEBAR */}
+        <div className="hidden w-72 shrink-0 lg:block">
+          <Sidebar />
+        </div>
 
-    <div className="flex min-h-screen">
+        {/* CONTENT */}
+        <div className="relative min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
+          {/* Animated background */}
+          <AnimatedBackground />
 
-      <Sidebar />
-
-      <main className="content-scroll relative flex-1 overflow-auto">
-
-        {/* Background */}
-
-        <AnimatedBackground />
-
-        {/* Main Content */}
-
-        <AnimatePresence mode="wait">
-
+          {/* Main animated content */}
           <motion.div
-            key={currentSong.id}
             initial={{
               opacity: 0,
               y: 30,
@@ -146,77 +116,65 @@ export default function Home() {
               y: 0,
               scale: 1,
             }}
-            exit={{
-              opacity: 0,
-              y: -20,
-              scale: 0.98,
-            }}
             transition={{
               duration: 0.45,
               ease: "easeOut",
             }}
-            className="relative z-10"
+            className="relative z-10 w-full"
           >
-
+            {/* HEADER */}
             <Header />
 
+            {/* HOME CONTENT */}
             <div
               className="
                 home-content
-                space-y-7
-                px-5
-                pb-44
+                w-full
+                space-y-6
+                px-4
                 pt-5
-                sm:px-8
+                pb-56
+                sm:px-6
                 lg:px-10
-                xl:px-11
+                xl:px-12
               "
             >
-
+              {/* HERO */}
               <Hero />
 
+              {/* MOOD CHIPS */}
               <MoodChips />
 
-              <QuickPicks
-                onSelectSong={playSong}
-              />
+              {/* QUICK PICKS */}
+              <QuickPicks onSelectSong={playSong} />
 
-              <ListenAgain
-                onSelectSong={playSong}
-              />
+              {/* LISTEN AGAIN */}
+              <ListenAgain onSelectSong={playSong} />
 
+              {/* NEW RELEASES */}
+              <NewReleases onSelectSong={playSong} />
+
+              {/* NOW PLAYING */}
               <NowPlaying
                 song={currentSong}
                 isPlaying={isPlaying}
               />
-
             </div>
-
           </motion.div>
+        </div>
+      </div>
 
-        </AnimatePresence>
-
-      </main>
-
-    </div>
-          {/* Bottom Player */}
-
+      {/* FIXED PLAYER */}
       <BottomPlayer />
 
-      {/* Search */}
-
+      {/* SEARCH */}
       <SearchModal />
 
-      {/* Command Palette */}
-
+      {/* COMMAND PALETTE */}
       <CommandPalette
         open={commandOpen}
-        onClose={() =>
-          setCommandOpen(false)
-        }
+        onClose={() => setCommandOpen(false)}
       />
-
     </main>
   );
 }
-
